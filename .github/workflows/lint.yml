@@ -2,9 +2,20 @@ name: lint
 on: pull_request
 
 jobs:
-  test:
+  hadolint:
     runs-on: ubuntu-latest
     name: hadolint
     steps:
       - uses: actions/checkout@v2
       - uses: brpaz/hadolint-action@master
+  shellcheck:
+    runs-on: ubuntu-latest
+    name: shellcheck
+    steps:
+      - uses: actions/checkout@v2
+      - name: install shellcheck
+        run: apt-get install shellcheck
+      - name: test bats suite
+        run: shellcheck -s bash test/*.bats
+      - name: test utility scripts
+        run: shellcheck -s dash *.sh
