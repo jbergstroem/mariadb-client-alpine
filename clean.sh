@@ -17,5 +17,3 @@ $(apk info -q -L mariadb-common | tail -n +2)"
 for path in $(echo "${INSTALLED_FILES}" | grep -v -E ${TO_KEEP}); do
 	eval rm -rf "${path}"
 done
-
-#$(echo ${FILES} | grep -v $(echo ${TO_KEEP} | sed -e 's/^.//'))"
