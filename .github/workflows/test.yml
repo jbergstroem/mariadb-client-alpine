@@ -1,0 +1,28 @@
+name: test
+on: pull_request
+
+env:
+  IMAGE: jbergstroem/mariadb-client-alpine
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    name: smoke
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with: 
+          node-version: '14.x'
+      - name: install bats
+        run: npm install -g bats
+      - name: create shorter sha
+        id: shortsha
+        run: "echo ::set-output name=ref::$(git rev-parse --short ${{ github.sha }})"
+      - name: build container
+        run: docker build -t ${IMAGE}:${VERSION} .
+        env:
+          VERSION: ${{ steps.shortsha.outputs.ref }}
+      - name: run bats
+        run: bats -t test
+        env:
+          VERSION: ${{ steps.shortsha.outputs.ref }}
